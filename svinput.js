@@ -52,10 +52,19 @@ $.widget('ly.svInput', {
         var svI = this;
         var originalInput = this.element
 
-        //validation stuff
-        svI._officialValue = originalInput.val();
-        svI.inputModeRevert();
+        //validation stuff here
+       
+        $(".ly-svInput").each(function () {
+            $(this).focus();
+        });
+        $(".ly-svInput:first").focus();
 
+            if ($("input.ly-svInvalid").length == 0) {
+
+                svI._officialValue = originalInput.val();
+                svI.inputModeRevert();
+            }
+       
     },
 
     _create: function () {

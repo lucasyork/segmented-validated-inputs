@@ -4,13 +4,11 @@
 <head>
     <meta charset="utf-8"/>
     <title></title>
-    <!--<script data-require="jquery" data-semver="2.1.1" src="jquery.min.js"></script>-->
+   
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" type="text/javascript"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>
-   <!-- <script data-require="jquery" data-semver="2.1.1" src="jquery-1.7.2.min.js"></script>-->
-    <script src="jquery-segmented-picker.js"></script>
-    <script src="jquery-segmented-input.js"></script>
-    <link rel="stylesheet" type="text/css" href="jquery-segment-picker.css"/>
+      <script src="svInput.js"></script>
+    <link rel="stylesheet" type="text/css" href="svinput.css"/>
     <script type="text/javascript">
         $(function ()
         {
@@ -28,9 +26,10 @@
                         { type: "-", hint: " - ", mask: "-" },
                         { maxLength: 3, minLength: 2, hint: "001", type: "N", title: "2-3-digit number" },
 						{ type: "-", hint: " - ", mask: "-" },
-                        { type: "N", hint: "0001",  title: "2-4-digit number", maxLength: 4, minLength: 2 }
-                      //  { type: "-", hint: " - ", mask: "-" },
-                      //  {   }
+                        { type: "N", hint: "0001",  title: "2-4-digit number", maxLength: 4, minLength: 2 },
+                        { type: "-", hint: " - ", mask: "-" },
+                        { type: "A", minLength: 3, maxLength: 5, mask: "C", title: "3-5 characters" }
+                        
                     ] // the segments!
                 });
           
@@ -45,9 +44,7 @@
             margin: 15px;
         }
 
-        .ly-svInvalid {
-            border: 2px solid red;
-        }
+       
     </style>
 </head>
 
@@ -55,9 +52,9 @@
         
 <div>
     <label>
-        Widget
-        <input type="text" id="svwidg" value="12-35-679"/>
-    </label>
+        Widget</label>
+        <input type="text" id="svwidg" value="12-35-679" />
+    
 </div>
 
 

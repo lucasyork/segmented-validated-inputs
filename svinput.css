@@ -1,0 +1,16 @@
+﻿
+/*Invalid input*/
+.ly-svInvalid {
+    border: 2px solid red;
+        }
+
+/*Buttons*/
+/*Edit/Cancel toggle*/
+#ly-svTBtn {
+    border: 1px groove gray;
+}
+
+/*Submit*/
+#ly-svSBtn {
+    border: 1px groove gray;
+}
