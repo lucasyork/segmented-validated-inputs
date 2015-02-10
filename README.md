@@ -17,13 +17,14 @@ $("input").svInput(
         {
 	segments: [{ ... }, { ... }, ... ], 
 		//The following are all optional:
+	submit: "",
+	acsource: "",
+	validator: "",	 
+	key: "",    
 	enabled: true,   
 	forceUpperCase: true,  
 	dftype: "N", 
-	dflength: 5, 
-	actarget: "",
-	valtarget: "", 
-	key: "",    
+	dflength: 5
                 });
 ```
 
@@ -32,13 +33,15 @@ $("input").svInput(
 Name | Description
 ---- | -----------
 `segments`|An array of segment objects (see below)
+`submit`|(optional) (Not yet functional!) The target URL to send data on submit (if validated).
+`acsource`|(optional) A URL for server-side autocomplete requests.
+`validator`|(optional) (Not yet functional!) A URL for server-side validation requests.
+`key`|(optional) An additional parameter passed to `actarget` and `valtarget`, e.g. for PageKey.
 `enabled`|(optional) If false, disables all segment inputs
 `forceUpperCase`|(optional) if true, converts text in segment inputs to uppercase
 `dftype`|(optional) The default segment type to use if not specified within the segment definition
 `dflength`|(optional) The default maximum length for the segment input if it cannot be determined any other way
-`actarget`|(optional) A URL for server-side autocomplete requests.
-`valtarget`| (optional) (Not yet functional!) A URL for server-side validation requests. 
-`key`|(optional) An additional parameter passed to `actarget` and `valtarget`, e.g. for PageKey.
+
 
 ###Segments:
 
@@ -65,8 +68,8 @@ hint| String|The placeholder that describes the input when empty, or how a separ
 title| String|The tooltip of the input| `title: "Area Code"`
 mask| String|If set, this overrides the input's value when creating the final output. (Intended for separators.)| `mask: "-"`
 regex| RegExp|If set, this overrides the default validation RegExp for the input| `regex: /\w/`
-ddown| String Array|A hard-coded list of selections for autocomplete| `ddown: ["Alpha", "Beta"]`
-acid| String| A unique identifier for the input segment, for server-side autocomplete | `acid: "PCO/YR"`
+ddown| String or String Array|An identifier to pass to the autocomplete source, or a hard-coded list of selections for autocomplete| `ddown: "PCO/MO"`, `ddown: ["Alpha", "Beta"]`
+uid| String| A unique identifier for the input segment, for server-side validation | `uid: "PCO/YR"`
 
 ###Notes
 
@@ -74,8 +77,11 @@ acid| String| A unique identifier for the input segment, for server-side autocom
 * If `minLength` is not defined, it defaults to `maxLength`: The input will accept that length, no more or less. 
 * `hint` for a separator defines how it appears between the input segments. `mask` defines how it appears when the inputs are consolidated into one string. 
 * `regex` will override other properties, including `type`. Use it with care.
-* If `ddown` is defined, `acid` is ignored. If neither is defined, that input segment will simply not have any autocomplete.
-* `ddown` can be a simple string array, or a JSON array with `[{ label: "Label1", value: "value1" }]` format. (See JQueryUI autocomplete API for details.) 
+* `ddown` can be a string, a simple string array, or a JSON array with `[{ label: "Label1", value: "value1" }]` format. (See JQueryUI autocomplete API for details.) 
+* If `ddown` is not defined, but `acsource` has been set in the widget settings, it will check for `uid` and use it instead, if possible.
+* If `uid` is not defined, but `validator` has been set in the widget settings, and the input is `type: "V"`, it will check for `ddown` and use it instead, if possible.
+* If neither `uid` nor `ddown` is defined, that input segment will have no autocomplete or server-side validation (but will otherwise function normally). 
+
 
 ##Acknowledgments
 

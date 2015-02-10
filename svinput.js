@@ -3,9 +3,10 @@
 $.widget('ly.svInput', {
     options: {
         items: {            
-            actarget: "", // autocomplete source
-            key: "",    // pagekey 
-            valtarget: "",            
+            acsource: "", // autocomplete source
+            validator: "", // validation target
+            submit: "", // submit target
+            key: "",    // pagekey
             enabled: true,   // enables/disables segment inputs
             forceUpperCase: true,
             segments: [], // the segments!
@@ -17,6 +18,7 @@ $.widget('ly.svInput', {
     _officialValue: "",
     _baseacpath: "",
     _basevalpath: "",
+    _basesubpath: "",
 
     _destroy: function () {
         this.element.show();
@@ -42,6 +44,7 @@ $.widget('ly.svInput', {
         if (pathy.length > 0) {
             if (basepath == "ac") { svI._baseacpath = pathy; }
             else if (basepath == "val") { svI._basevalpath = pathy; }
+            else if (basepath == "submit") { svI._basesubpath = pathy; }
             return true;
         } else { return false; }
 
@@ -103,8 +106,9 @@ $.widget('ly.svInput', {
 		var buttonToggle = "<img src='' title='Edit...' id='ly-svTBtn' />";
 		var buttonSubmit = "<img src='' title='Submit' id='ly-svSBtn' />";
         var workingSegment;
-        var IsACTargetDefined = svI.genPath(svI.options.actarget, "ac");
-        var IsValTargetDefined = svI.genPath(svI.options.valtarget, "val");
+        var IsACTargetDefined = svI.genPath(svI.options.acsource, "ac");
+        var IsValTargetDefined = svI.genPath(svI.options.validator, "val");
+        var IsSubTargetDefined = svI.genPath(svI.options.submit, "submit");
 
 
         originalInput.after(buttonSubmit);
@@ -124,6 +128,8 @@ $.widget('ly.svInput', {
             var segType = Seg.type;
             var segLength = Seg.maxLength, segMinLength = Seg.minLength, segMax = Seg.max, segMin = Seg.min;
             var segHint = Seg.hint, segTitle = Seg.title, segMask = Seg.mask;
+            var segDroplist = Seg.ddown, segAcid = Seg.uid;
+
             if (typeof segLength == "undefined") {
                 if (typeof segMax == "undefined") {
                     if (typeof segMin == "undefined") {
@@ -151,9 +157,10 @@ $.widget('ly.svInput', {
 			if (typeof segMax != "undefined") { workingSegment.attr("max", segMax); }
 			if (typeof segMin != "undefined") { workingSegment.attr("min", segMin); }
 			if (typeof segMask != "undefined") { workingSegment.data("mask", segMask); }
-					
-					
-					
+			if (typeof segAcid != "undefined") { workingSegment.data("uid", segAcid); }
+			if (typeof segDroplist != "undefined") { workingSegment.data("dd", segDroplist); }
+
+					//regex logic
 		var segregN = new RegExp("\\d{" + segMinLength + "," +  segLength + "}");  //numeric regex
         var segregA = new RegExp("\\w{" + segMinLength + "," +  segLength + "}"); //alphanumeric regex
         var segregV = new RegExp("\\w{" + segMinLength + "," +  segLength + "}"); //validated regex 
@@ -170,6 +177,7 @@ $.widget('ly.svInput', {
 
                 originalInput.before(workingSegment);
 
+                //splitting the original value into the segment(s)
                 var slice;
                 if (segLength == segMinLength) {
                      slice = originalInput.val().substring(0, segLength);
@@ -200,21 +208,20 @@ $.widget('ly.svInput', {
 
                 //autocomplete
                 var sourcepath = "";
-                var segDroplist = Seg.ddown;
-                var segAcid = Seg.acid;
-                if (typeof segDroplist != "undefined") { sourcepath = segDroplist; }
+                
+                if (typeof segDroplist == "object") { sourcepath = segDroplist; }
+                else if (IsACTargetDefined && typeof segDroplist == "string") { sourcepath = svI._baseacpath + "/" + segDroplist; }
                 else if (IsACTargetDefined && typeof segAcid != "undefined") { sourcepath = svI._baseacpath + "/" + segAcid; }
-
                 
                 if (sourcepath.length > 0) {
                     workingSegment.autocomplete({
                         minLength: 0,
                         delay: 350,
                         source: sourcepath
-
                     });
                 }
-            } //end if segType
+
+            } //end if 
             else if (segType == "-") {
 				
 				if (typeof segMask == "undefined") { segMask = ""; }
@@ -229,13 +236,15 @@ $.widget('ly.svInput', {
             else {
                 console.log(segType + " is not a valid input segment type");
             }
-        }
+        } // end for each segment
         originalInput.val(originalVal);
 
         $(".ly-svInput").hide();
 
         var si = $("input.ly-svInput");
 
+
+            //Validation on blur
         si.blur(function () {
             var $this = $(this);
             var pat = new RegExp($this.data("pattern"));
@@ -243,7 +252,7 @@ $.widget('ly.svInput', {
 			
             if (svI.options.forceUpperCase) { $this.val($this.val().toUpperCase()); }
 
-			if ($this.hasClass("ly-svN") && $this.val().length < $this.attr("minlength"))
+            if (($this.hasClass("ly-svN") || $this.hasClass("ly-svV")) && $this.val().length < $this.attr("minlength"))
 			{
 				var adds = parseInt($this.attr("minlength") - $this.val().length);
 				
@@ -251,9 +260,7 @@ $.widget('ly.svInput', {
 				{
 					$this.val("0" + $this.val());
 				}
-			}
-
-            
+			}            
 
             if ($this.val().match(pat) != null){ 
                 if (!($this.val() > $this.attr("max") || $this.val() < $this.attr("min") || $this.val().length > $this.attr("maxlength")))
@@ -262,12 +269,33 @@ $.widget('ly.svInput', {
 				}			
 			}
             
-            $("#RepVal").text(isValid); //temporary measure!
-
             if (!isValid) { $this.addClass("ly-svInvalid");  }
 			else { 
 			$this.removeClass("ly-svInvalid");		
-			}
+            }
+
+                    //server-side validation
+            if ($this.hasClass("ly-svV")) {
+
+                if (IsValTargetDefined) {
+                    var sid = $this.data("uid");
+                    if (typeof sid == "undefined") { sid = $this.data("dd"); }
+                    if (typeof sid == "undefined" || typeof sid == "object") { sid = false; }
+
+                    if (sid) {
+                        var vurl = svI._basevalpath + "/" + sid;
+                        $.ajax({
+                            type: 'POST',
+                            data: $this.val(),
+                            url: vurl,
+                            async:false
+                        }).done(function (response) {
+                            if (response == "0") { $this.addClass("ly-svInvalid"); }
+                        });
+                    }
+                }
+            }
+
 		
 		if ($("input.ly-svInvalid").length == 0)
 		{
@@ -283,10 +311,7 @@ $.widget('ly.svInput', {
 			
 			originalInput.val(amalgam);
 			$("#outval").text(originalInput.val());
-		}
-		
-        });
-    }
-
-
+		}		
+        }); //end on blur
+    } //end _create
 });
