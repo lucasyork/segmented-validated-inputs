@@ -8,9 +8,19 @@
 /*Edit/Cancel toggle*/
 #ly-svTBtn {
     border: 1px groove gray;
+    height: 18px;
+    vertical-align: middle;
 }
 
 /*Submit*/
 #ly-svSBtn {
     border: 1px groove gray;
+    height: 18px;
+    vertical-align: middle;
+}
+
+/*Working gif*/
+#ly-svWBtn {
+    height: 18px;
+    vertical-align: middle;
 }

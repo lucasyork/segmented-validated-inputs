@@ -24,7 +24,12 @@ $("input").svInput(
 	enabled: true,   
 	forceUpperCase: true,  
 	dftype: "N", 
-	dflength: 5
+	dflength: 5,		
+	imgSubmit: "",
+	imgOpen: "",
+	imgCancel: "",
+	imgWorking: ""
+
                 });
 ```
 
@@ -35,12 +40,16 @@ Name | Description
 `segments`|An array of segment objects (see below)
 `submit`|(optional) (Not yet functional!) The target URL to send data on submit (if validated).
 `acsource`|(optional) A URL for server-side autocomplete requests.
-`validator`|(optional) (Not yet functional!) A URL for server-side validation requests.
-`key`|(optional) An additional parameter passed to `actarget` and `valtarget`, e.g. for PageKey.
+`validator`|(optional) A URL for server-side validation requests.
+`key`|(optional) An additional parameter passed to `submit`, `acsource`, and `validator` targets, e.g. for PageKey.
 `enabled`|(optional) If false, disables all segment inputs
 `forceUpperCase`|(optional) if true, converts text in segment inputs to uppercase
 `dftype`|(optional) The default segment type to use if not specified within the segment definition
 `dflength`|(optional) The default maximum length for the segment input if it cannot be determined any other way
+`imgSubmit`|(optional) Replaces the default Submit icon
+`imgOpen`|(optional) Replaces the default Open/Edit icon
+`imgCancel`| (optional) Replaces the default Cancel icon
+`imgWorking`| (optional) Replaces the default Working... icon. 
 
 
 ###Segments:
@@ -59,7 +68,7 @@ All properties are optional, though note that `type` must be defined in the widg
 
 Property | Format | Description   | Example
 ------------- | -------- | ------------- | -------
-Type|String| Numeric ("N"), Alphanumeric ("A"), Validated ("V"), or Separator ("-") | `type: "A"` 
+type|String| Numeric ("N"), Alphanumeric ("A"), Validated ("V"), or Separator ("-") | `type: "A"` 
 maxLength| Integer |The maximum number of characters the input will accept |   `maxLength: 5` 
 minLength | Integer |The minimum number of characters the input will accept |  `minLength: 3` 
 max| Integer|The maximum value the input will accept| `max: 256`
