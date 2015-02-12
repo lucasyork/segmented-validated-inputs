@@ -19,6 +19,7 @@ $.widget('ly.svInput', {
     },
 
     _officialValue: "",
+    _tempValue: "",
     _baseacpath: "",
     _basevalpath: "",
     _basesubpath: "",
@@ -105,8 +106,12 @@ $.widget('ly.svInput', {
 
             $.when.apply($, waitfor).done(function () {
                 if ($("input.ly-svInvalid").length == 0) {
+                    
+                    //submission stuff
+                    svI._officialValue = svI._tempValue;
+                    originalInput.val(svI._officialValue);
+                    originalInput.change(); //force a change event
 
-                    svI._officialValue = originalInput.val();
                     svI.inputModeRevert();
                 } 
                 
@@ -343,8 +348,8 @@ $.widget('ly.svInput', {
 			});
 			
             //new value into original input
-			originalInput.val(amalgam);
-			$("#outval").text(originalInput.val()); //temporary!
+			svI._tempValue = amalgam;
+			$("#outval").text(svI._tempValue); //temporary!
 		}		
         }); //end on blur
     } //end _create
