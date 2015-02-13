@@ -64,21 +64,21 @@ ex:
 
 ```
 
-All properties are optional, though note that `type` must be defined in the widget setting `dftype` if it is ommitted in the segment definition.
+All properties are optional; a segment defined as `{ }` will use the widget defaults `dftype` and `dflength` to determine its behavior. 
 
 Property | Format | Description   | Example
 ------------- | -------- | ------------- | -------
-type|String| Numeric ("N"), Alphanumeric ("A"), Validated ("V"), or Separator ("-") | `type: "A"` 
-maxLength| Integer |The maximum number of characters the input will accept |   `maxLength: 5` 
-minLength | Integer |The minimum number of characters the input will accept |  `minLength: 3` 
-max| Integer|The maximum value the input will accept| `max: 256`
-min| Integer|The minimum value the input will accept| `min: 1`
-hint| String|The placeholder that describes the input when empty, or how a separator will display between inputs| `hint: "00"`
-title| String|The tooltip of the input| `title: "Area Code"`
-mask| String|If set, this overrides the input's value when creating the final output. (Intended for separators.)| `mask: "-"`
-regex| RegExp|If set, this overrides the default validation RegExp for the input| `regex: /\w/`
-ddown| String or String Array|An identifier to pass to the autocomplete source, or a hard-coded list of selections for autocomplete| `ddown: "PCO/MO"`, `ddown: ["Alpha", "Beta"]`
-uid| String| A unique identifier for the input segment, for server-side validation | `uid: "PCO/YR"`
+`type`|String| Numeric ("N"), Alphanumeric ("A"), Validated ("V"), or Separator ("-") | `type: "A"` 
+`maxLength`| Integer |The maximum number of characters the input will accept |   `maxLength: 5` 
+`minLength` | Integer |The minimum number of characters the input will accept |  `minLength: 3` 
+`max`| Integer|The maximum value the input will accept| `max: 256`
+`min`| Integer|The minimum value the input will accept| `min: 1`
+`hint`| String|The placeholder that describes the input when empty, or how a separator will display between inputs| `hint: "00"`
+`title`| String|The tooltip of the input| `title: "Area Code"`
+`mask`| String|If set, this overrides the input's value when creating the final output. (Intended for separators.)| `mask: "-"`
+`regex`| RegExp|If set, this overrides the default validation RegExp for the input| `regex: /\w/`
+`ddown`| String or String Array|An identifier to pass to the autocomplete source, or a hard-coded list of selections for autocomplete| `ddown: "PCO/MO"`, `ddown: ["Alpha", "Beta"]`
+`uid`| String| A unique identifier for the input segment, for server-side validation | `uid: "PCO/YR"`
 
 ###Notes
 

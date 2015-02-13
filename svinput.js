@@ -84,7 +84,7 @@ $.widget('ly.svInput', {
     submitValue: function(){
         var svI = this;
         var originalInput = this.element
-        var waitfor = [];               
+        var waitfor = [];
 
         $("#ly-svWBtn").show();
         $("#ly-svSBtn").hide();
@@ -106,19 +106,18 @@ $.widget('ly.svInput', {
 
             $.when.apply($, waitfor).done(function () {
                 if ($("input.ly-svInvalid").length == 0) {
-                    
+
                     //submission stuff
                     svI._officialValue = svI._tempValue;
                     originalInput.val(svI._officialValue);
                     originalInput.change(); //force a change event
 
                     svI.inputModeRevert();
-                } 
-                
+                } else { $("#ly-svSBtn").show(); }               
             });
-        }
+        } else { $("#ly-svSBtn").show(); }
+
         $("#ly-svWBtn").hide();
-        $("#ly-svSBtn").show();
     },
 
     ssValidation: function (input) {
