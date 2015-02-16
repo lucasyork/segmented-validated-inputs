@@ -3,7 +3,7 @@
 This JQueryUI widget takes a single text input and separates it into input segments, which each can have separate parameters defined, including validation. 
 
 ##Disclaimer
-Still very much a work in progress. Some planned functionality has not yet been implemented. 
+A work in progress. Some planned functionality has not yet been implemented. 
 
 ##Dependencies
 JQuery, 
@@ -17,18 +17,20 @@ $("input").svInput(
         {
 	segments: [{ ... }, { ... }, ... ], 
 		//The following are all optional:
-	submit: "",
+	dftype: "N", 
+	dflength: 5,	
 	acsource: "",
 	validator: "",	 
-	key: "",    
+	key: "",
 	enabled: true,   
-	forceUpperCase: true,  
-	dftype: "N", 
-	dflength: 5,		
+	forceUpperCase: true,
+	autoOpen: false,
+	autoSubmit: false,
 	imgSubmit: "",
 	imgOpen: "",
 	imgCancel: "",
-	imgWorking: ""
+	imgWorking: "",
+	onSubmit: function() { ... }
 
                 });
 ```
@@ -38,19 +40,24 @@ $("input").svInput(
 Name | Description
 ---- | -----------
 `segments`|An array of segment objects (see below)
-`submit`|(optional) (Not yet functional!) The target URL to send data on submit (if validated).
-`acsource`|(optional) A URL for server-side autocomplete requests.
-`validator`|(optional) A URL for server-side validation requests.
-`key`|(optional) An additional parameter passed to `submit`, `acsource`, and `validator` targets, e.g. for PageKey.
-`enabled`|(optional) If false, disables all segment inputs
-`forceUpperCase`|(optional) if true, converts text in segment inputs to uppercase
 `dftype`|(optional) The default segment type to use if not specified within the segment definition
 `dflength`|(optional) The default maximum length for the segment input if it cannot be determined any other way
+`acsource`|(optional) A URL for server-side autocomplete requests.
+`validator`|(optional) A URL for server-side validation requests.
+`key`|(optional) An additional parameter passed to the `acsource` and `validator` targets, e.g. for PageKey
+`enabled`|(optional) If false, disables all segment inputs
+`forceUpperCase`|(optional) If true, converts text in segment inputs to uppercase
+`autoOpen`|(optional) If true, automatically opens the widget on load
+`autoSubmit`|(optional) If true, automatically validates (and if valid, submits) the new value(s) when focus leaves the last segment input
 `imgSubmit`|(optional) Replaces the default Submit icon
 `imgOpen`|(optional) Replaces the default Open/Edit icon
-`imgCancel`| (optional) Replaces the default Cancel icon
-`imgWorking`| (optional) Replaces the default Working... icon. 
+`imgCancel`|(optional) Replaces the default Cancel icon
+`imgWorking`|(optional) Replaces the default Working... icon
+`onSubmit`|(optional) A callback that fires when submitting, *before* the input change event. 
 
+####Notes
+* Buttons can be hidden entirely by setting their respective img parameter to an empty string (ex: `imgCancel: ""`).
+* In the `onSubmit` callback function, `this.oldVal` and `this.newVal` can be used to access the original value and the new value respectively.
 
 ###Segments:
 
@@ -80,7 +87,7 @@ Property | Format | Description   | Example
 `ddown`| String or String Array|An identifier to pass to the autocomplete source, or a hard-coded list of selections for autocomplete| `ddown: "PCO/MO"`, `ddown: ["Alpha", "Beta"]`
 `uid`| String| A unique identifier for the input segment, for server-side validation | `uid: "PCO/YR"`
 
-###Notes
+####Notes
 
 * If `maxLength` is not defined, but `max` is, `maxLength` will be set to `max.length`. If neither are defined, it will try to use `min.length`, and then will default to the widget's `dflength` option.
 * If `minLength` is not defined, it defaults to `maxLength`: The input will accept that length, no more or less. 
@@ -90,7 +97,6 @@ Property | Format | Description   | Example
 * If `ddown` is not defined, but `acsource` has been set in the widget settings, it will check for `uid` and use it instead, if possible.
 * If `uid` is not defined, but `validator` has been set in the widget settings, and the input is `type: "V"`, it will check for `ddown` and use it instead, if possible.
 * If neither `uid` nor `ddown` is defined, that input segment will have no autocomplete or server-side validation (but will otherwise function normally). 
-
 
 ##Acknowledgments
 

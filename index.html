@@ -18,13 +18,16 @@
             var keypath = '';
             
 
-            $("#svwidg").change(function(){ console.log($(this).val());}).svInput(
+            $("#svwidg").change(function(){ console.log("change event");}).svInput(
                 {
                     dftype: "N",
 					acsource: targetpath,
 					validator: valpath,
-                   // submit: subpath,
-                    key: keypath,
+					onSubmit: function () { console.log("oldval: " + this.oldVal); console.log("newval: " + this.newVal); },
+					autoSubmit: true,
+					key: keypath,
+					imgCancel: "",
+                    autoOpen: true,
                     segments: [
                         { type: "V", maxLength: 3, hint: "015", title: "Three-digit number", ddown: "PJCODE/0YR", uid:"PJCODE/0YR", regex: /\d/ },
                         { type: "-", hint: " - ", mask: "-" },

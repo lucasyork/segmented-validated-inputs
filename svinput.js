@@ -4,10 +4,12 @@ $.widget('ly.svInput', {
     options: {                    
             acsource: "", // autocomplete source
             validator: "", // validation target
-            submit: "", // submit target
+            onSubmit: null, // submit callback
             key: "",    // pagekey
             enabled: true,   // enables/disables segment inputs
             forceUpperCase: true,
+            autoOpen: false,
+            autoSubmit: false,
             segments: [], // the segments!
             dftype: "-",  // the default type used when not specified in segment -- HardSeparatorType "-", NumericInputType "N", AlphanumericInputType "A", ValidatedInputType "V"
             dflength: 5, //the default maxLength used when all other efforts fail
@@ -22,7 +24,8 @@ $.widget('ly.svInput', {
     _tempValue: "",
     _baseacpath: "",
     _basevalpath: "",
-    _basesubpath: "",
+    oldVal: "",
+    newVal: "",
 
     _destroy: function () {
         this.element.show();
@@ -47,8 +50,7 @@ $.widget('ly.svInput', {
         
         if (pathy.length > 0) {
             if (basepath == "ac") { svI._baseacpath = pathy; }
-            else if (basepath == "val") { svI._basevalpath = pathy; }
-            else if (basepath == "submit") { svI._basesubpath = pathy; }
+            else if (basepath == "val") { svI._basevalpath = pathy; }            
             return true;
         } else { return false; }
 
@@ -61,10 +63,24 @@ $.widget('ly.svInput', {
         originalInput.hide();
         $(".ly-svInput").show();
         $("#ly-svSBtn").show();
+        if (svI.options.imgCancel.length > 0) {
+            if (svI.options.imgOpen.length > 0) {
+                $("#ly-svTBtn").attr("title", "Cancel").attr("src", svI.options.imgCancel).click(function () {
+                    svI.inputModeRevert();
+                });
+            } else {
+                svI.element.after("<img src='" + svI.options.imgCancel + "' title='Cancel' id='ly-svTBtn' />");
+                $("#ly-svTBtn").click(function () {
+                    var $this = $(this);
+                    $this.remove();
+                    svI.inputModeRevert();
+                });
+            }
 
-        $("#ly-svTBtn").attr("title", "Cancel").attr("src", svI.options.imgCancel).click(function () {
-            svI.inputModeRevert();
-        });
+        } else {
+            $("#ly-svTBtn").hide();
+        }
+        
     },
 
     inputModeRevert: function () {
@@ -76,14 +92,14 @@ $.widget('ly.svInput', {
         $("#ly-svWBtn").hide();
         originalInput.show().val(svI._officialValue);
         
-        $("#ly-svTBtn").attr("title", "Edit...").attr("src", svI.options.imgOpen).unbind("click").click(function () {
+        $("#ly-svTBtn").attr("title", "Edit...").attr("src", svI.options.imgOpen).unbind("click").show().click(function () {
             svI.inputModeOpen();
         });
     },
 
     submitValue: function(){
         var svI = this;
-        var originalInput = this.element
+        var originalInput = this.element;
         var waitfor = [];
 
         $("#ly-svWBtn").show();
@@ -91,9 +107,9 @@ $.widget('ly.svInput', {
 
         //validation stuff
         $(".ly-svA, .ly-svN").each(function () {
-            $(this).focus();
-        });
-        $(".ly-svInput:first").focus();
+            var $this = $(this);
+                waitfor.push(svI.blurValidation($this));               
+            });
 
         if ($("input.ly-svInvalid").length == 0) {
 
@@ -110,14 +126,54 @@ $.widget('ly.svInput', {
                     //submission stuff
                     svI._officialValue = svI._tempValue;
                     originalInput.val(svI._officialValue);
+                    svI.newVal = svI._officialValue;
+                    if (svI.options.onSubmit != null) { svI.options.onSubmit.call(svI); }
                     originalInput.change(); //force a change event
-
+                    svI.oldVal = svI._officialValue;
                     svI.inputModeRevert();
-                } else { $("#ly-svSBtn").show(); }               
+                } else {
+                    $("#ly-svSBtn").show();
+                    $("#ly-svWBtn").hide();
+                }
             });
-        } else { $("#ly-svSBtn").show(); }
+        } else {
+            $("#ly-svSBtn").show();
+            $("#ly-svWBtn").hide();
+        }
 
-        $("#ly-svWBtn").hide();
+        
+    },
+
+    blurValidation: function (input) {
+        var svI = this;
+        var pat = new RegExp(input.data("pattern"));
+        var isValid = false;
+        var dfd = $.Deferred();
+
+        if (svI.options.forceUpperCase) { input.val(input.val().toUpperCase()); }
+
+        if ((input.hasClass("ly-svN") || input.hasClass("ly-svV")) && input.val().length < input.attr("minlength")) {
+            var adds = parseInt(input.attr("minlength") - input.val().length);
+
+            for (var i = 0; i < adds; i++) {
+                input.val("0" + input.val());
+            }
+        }
+
+        if (input.val().match(pat) != null) {
+            if (!(input.val() > input.attr("max") || input.val() < input.attr("min") || input.val().length > input.attr("maxlength"))) {
+                isValid = true;
+            }
+        }
+
+        if (!isValid) { input.addClass("ly-svInvalid"); }
+        else {
+            input.removeClass("ly-svInvalid");
+        }
+
+         dfd.resolve(); 
+
+        return dfd.promise();
     },
 
     ssValidation: function (input) {
@@ -139,7 +195,7 @@ $.widget('ly.svInput', {
                 else { input.addClass("ly-svValid") }
                 dfd.resolve();
             });
-        }
+        } else { dfd.resolve(); }
         return dfd.promise();
     },
 
@@ -147,18 +203,21 @@ $.widget('ly.svInput', {
         var svI = this;
         var originalInput = this.element, originalName = originalInput.attr("name"), originalVal = originalInput.val();
         svI._officialValue = originalVal;
+        svI.oldVal = originalVal;
 		var disableflag = "";
         if (typeof originalName == "undefined") { originalName = originalInput.attr("id"); }
 		if (!svI.options.enabled) { disableflag = "disabled"; }
 		var inputTemplate = "<input type='text' class='ly-svInput' " + disableflag + "/>";
-		var buttonToggle = "<img src='" + svI.options.imgOpen + "' title='Edit...' id='ly-svTBtn' />";
-		var buttonSubmit = "<img src='" + svI.options.imgSubmit + "' title='Submit' id='ly-svSBtn' />";
-		var waitgif = "<img src='" + svI.options.imgWorking + "' title='Please wait...' id='ly-svWBtn' />";
+		var buttonToggle;
+	    	if (svI.options.imgOpen.length > 0) { buttonToggle = "<img src='" + svI.options.imgOpen + "' title='Edit...' id='ly-svTBtn' />"; }
+		var buttonSubmit;
+		    if (svI.options.imgSubmit.length > 0) { buttonSubmit = "<img src='" + svI.options.imgSubmit + "' title='Submit' id='ly-svSBtn' />"; }
+	    var waitgif;
+		    if (svI.options.imgWorking.length > 0) { waitgif = "<img src='" + svI.options.imgWorking + "' title='Please wait...' id='ly-svWBtn' />"; }
         var workingSegment;
         var IsACTargetDefined = svI.genPath(svI.options.acsource, "ac");
         var IsValTargetDefined = svI.genPath(svI.options.validator, "val");
-        var IsSubTargetDefined = svI.genPath(svI.options.submit, "submit");
-
+        
         originalInput.after(buttonSubmit);
         originalInput.after(waitgif);
         originalInput.after(buttonToggle);
@@ -298,58 +357,41 @@ $.widget('ly.svInput', {
             //Validation on blur
         si.blur(function () {
             var $this = $(this);
-            var pat = new RegExp($this.data("pattern"));
-            var isValid = false;
-			
-            if (svI.options.forceUpperCase) { $this.val($this.val().toUpperCase()); }
+            svI.blurValidation($this);
 
-            if (($this.hasClass("ly-svN") || $this.hasClass("ly-svV")) && $this.val().length < $this.attr("minlength"))
-			{
-				var adds = parseInt($this.attr("minlength") - $this.val().length);
-				
-				for (var i=0; i < adds; i++)
-				{
-					$this.val("0" + $this.val());
-				}
-			}            
-
-            if ($this.val().match(pat) != null){ 
-                if (!($this.val() > $this.attr("max") || $this.val() < $this.attr("min") || $this.val().length > $this.attr("maxlength")))
-				{
-				isValid = true;
-				}			
-			}
-            
-            if (!isValid) { $this.addClass("ly-svInvalid");  }
-			else { 
-			$this.removeClass("ly-svInvalid");		
-            }
-
-                    //server-side validation
             if ($this.hasClass("ly-svV")) {
-
                 if (IsValTargetDefined) {
                     svI.ssValidation($this);
                 }
             }
 
-		//If nothing invalid...
-		if ($("input.ly-svInvalid").length == 0)
-		{
-			var amalgam  = "";
-			var piece;
-			$(".ly-svInput").each(function(){
-				var $t = $(this);
-				
-				if ($t.data("mask")){piece = $t.data("mask");}
-				else {piece = $t.val();}
-				amalgam = amalgam + piece;
-			});
-			
-            //new value into original input
-			svI._tempValue = amalgam;
-			$("#outval").text(svI._tempValue); //temporary!
-		}		
+            //If nothing invalid...
+            if ($("input.ly-svInvalid").length == 0) {
+                var amalgam = "";
+                var piece;
+                $(".ly-svInput").each(function () {
+                    var $t = $(this);
+
+                    if ($t.data("mask")) { piece = $t.data("mask"); }
+                    else { piece = $t.val(); }
+                    amalgam = amalgam + piece;
+                });
+
+                //new value into original input
+                svI._tempValue = amalgam;
+                $("#outval").text(svI._tempValue); //temporary!
+            }
+
         }); //end on blur
+
+        if (svI.options.autoSubmit) {
+            var lastInput = $("input.ly-svInput:last");
+            lastInput.blur(function () {
+                svI.submitValue();
+            });
+        }
+
+        if (svI.options.autoOpen) { svI.inputModeOpen(); }
+        
     } //end _create
 });
