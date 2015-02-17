@@ -4,6 +4,11 @@
     border: 2px solid red;
         }
 
+/*Validation error*/
+.ly-svUnval {
+    border: 2px dashed lightcoral;
+}
+
 /*Buttons*/
 /*Edit/Cancel toggle*/
 #ly-svTBtn {

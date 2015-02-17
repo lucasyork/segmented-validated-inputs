@@ -121,7 +121,7 @@ $.widget('ly.svInput', {
             });
 
             $.when.apply($, waitfor).done(function () {
-                if ($("input.ly-svInvalid").length == 0) {
+                if ($("input.ly-svInvalid").length == 0 && $("input.ly-svUnval").length == 0) {
 
                     //submission stuff
                     svI._officialValue = svI._tempValue;
@@ -182,7 +182,8 @@ $.widget('ly.svInput', {
         if (typeof sid == "undefined") { sid = input.data("dd"); }
         if (typeof sid == "undefined" || typeof sid == "object") { sid = false; }
         var dfd = $.Deferred();
-
+        input.removeClass("ly-svUnval");
+        input.attr("title", input.data("st"));
         if (sid) {
             var vurl = svI._basevalpath + "/" + sid;
             $.ajax({
@@ -194,7 +195,12 @@ $.widget('ly.svInput', {
                 if (response == "0") { input.addClass("ly-svInvalid"); }
                 else { input.addClass("ly-svValid") }
                 dfd.resolve();
-            });
+            }).fail(function () {
+                input.addClass("ly-svUnval");
+                input.data("st", input.attr("title"));
+                input.attr("title", "Unable to validate");
+                dfd.resolve();
+            });;
         } else { dfd.resolve(); }
         return dfd.promise();
     },
@@ -263,7 +269,7 @@ $.widget('ly.svInput', {
 					.attr("minlength", segMinLength)
                     .attr("size", segLength)
                     .attr("placeholder", segHint)
-                    .attr("title", segTitle);
+                    .attr("title", segTitle).data("st", segTitle);
 			if (typeof segMax != "undefined") { workingSegment.attr("max", segMax); }
 			if (typeof segMin != "undefined") { workingSegment.attr("min", segMin); }
 			if (typeof segMask != "undefined") { workingSegment.data("mask", segMask); }
