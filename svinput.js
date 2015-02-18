@@ -10,6 +10,7 @@ $.widget('ly.svInput', {
             forceUpperCase: true,
             autoOpen: false,
             autoSubmit: false,
+            showHints: true,
             segments: [], // the segments!
             dftype: "-",  // the default type used when not specified in segment -- HardSeparatorType "-", NumericInputType "N", AlphanumericInputType "A", ValidatedInputType "V"
             dflength: 5, //the default maxLength used when all other efforts fail
@@ -243,7 +244,7 @@ $.widget('ly.svInput', {
             var Seg = svI.options.segments[i];
             var segType = Seg.type;
             var segLength = Seg.maxLength, segMinLength = Seg.minLength, segMax = Seg.max, segMin = Seg.min;
-            var segHint = Seg.hint, segTitle = Seg.title, segMask = Seg.mask;
+            var segHint = Seg.hint, segTitle = Seg.title, segMask = Seg.mask, segName = Seg.name;
             var segDroplist = Seg.ddown, segAcid = Seg.uid;
 
             if (typeof segLength == "undefined") {
@@ -257,7 +258,13 @@ $.widget('ly.svInput', {
                     segLength = segMax.toString().length;
                 }
             }
-            if (typeof segHint == "undefined") { segHint = ""; }
+            
+            if (typeof segHint == "undefined") {
+                if (typeof segName == "undefined") {
+                    segHint = "";
+                } else { segHint = segName; }                
+            }
+
 			if (typeof segMinLength == "undefined") { segMinLength = segLength; }
             if (typeof segType == "undefined") { segType = svI.options.dftype; }
             if (typeof segTitle == "undefined") { segTitle = segHint; }
@@ -267,11 +274,12 @@ $.widget('ly.svInput', {
                     .attr("id", originalName + "_i" + i)
                     .attr("maxlength", segLength)
 					.attr("minlength", segMinLength)
-                    .attr("size", segLength)
-                    .attr("placeholder", segHint)
+                    .attr("size", segLength)                    
                     .attr("title", segTitle).data("st", segTitle);
+            if (svI.options.showHints) { workingSegment.attr("placeholder", segHint); }
 			if (typeof segMax != "undefined") { workingSegment.attr("max", segMax); }
 			if (typeof segMin != "undefined") { workingSegment.attr("min", segMin); }
+			if (typeof segName != "undefined") { workingSegment.attr("name", segName); }
 			if (typeof segMask != "undefined") { workingSegment.data("mask", segMask); }
 			if (typeof segAcid != "undefined") { workingSegment.data("uid", segAcid); }
 			if (typeof segDroplist != "undefined") { workingSegment.data("dd", segDroplist); }

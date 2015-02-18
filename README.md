@@ -24,6 +24,7 @@ $("input").svInput(
 	key: "",
 	enabled: true,   
 	forceUpperCase: true,
+	showHints: true,
 	autoOpen: false,
 	autoSubmit: false,
 	imgSubmit: "",
@@ -47,6 +48,7 @@ Name | Description
 `key`|(optional) An additional parameter passed to the `acsource` and `validator` targets, e.g. for PageKey
 `enabled`|(optional) If false, disables all segment inputs
 `forceUpperCase`|(optional) If true, converts text in segment inputs to uppercase
+`showHints`|(optional) If true, displays input placeholder hints in segment inputs
 `autoOpen`|(optional) If true, automatically opens the widget on load
 `autoSubmit`|(optional) If true, automatically validates (and if valid, submits) the new value(s) when focus leaves the last segment input
 `imgSubmit`|(optional) Replaces the default Submit icon
@@ -75,22 +77,24 @@ All properties are optional; a segment defined as `{ }` will use the widget defa
 
 Property | Format | Description   | Example
 ------------- | -------- | ------------- | -------
-`type`|String| Numeric ("N"), Alphanumeric ("A"), Validated ("V"), or Separator ("-") | `type: "A"` 
-`maxLength`| Integer |The maximum number of characters the input will accept |   `maxLength: 5` 
-`minLength` | Integer |The minimum number of characters the input will accept |  `minLength: 3` 
-`max`| Integer|The maximum value the input will accept| `max: 256`
-`min`| Integer|The minimum value the input will accept| `min: 1`
-`hint`| String|The placeholder that describes the input when empty, or how a separator will display between inputs| `hint: "00"`
-`title`| String|The tooltip of the input| `title: "Area Code"`
-`mask`| String|If set, this overrides the input's value when creating the final output. (Intended for separators.)| `mask: "-"`
-`regex`| RegExp|If set, this overrides the default validation RegExp for the input| `regex: /\w/`
-`ddown`| String or String Array|An identifier to pass to the autocomplete source, or a hard-coded list of selections for autocomplete| `ddown: "PCO/MO"`, `ddown: ["Alpha", "Beta"]`
-`uid`| String| A unique identifier for the input segment, for server-side validation | `uid: "PCO/YR"`
+`type`|String| Numeric ("N"), Alphanumeric ("A"), Validated ("V"), or Separator ("-") |`type: "A"` 
+`maxLength`|Integer|The maximum number of characters the input will accept |`maxLength: 5` 
+`minLength` |Integer|The minimum number of characters the input will accept |`minLength: 3` 
+`max`|Integer|The maximum value the input will accept|`max: 256`
+`min`|Integer|The minimum value the input will accept|`min: 1`
+`name`|String|The name of the input|`name: "Year"`
+`hint`|String|The placeholder that describes the input when empty, or how a separator will display between inputs|`hint: "00"`
+`title`| String|The tooltip of the input|`title: "Area Code"`
+`mask`|String|If set, this overrides the input's value when creating the final output. (Intended for separators.)|`mask: "-"`
+`regex`|RegExp|If set, this overrides the default validation RegExp for the input|`regex: /\w/`
+`ddown`|String or String Array|An identifier to pass to the autocomplete source, or a hard-coded list of selections for autocomplete|`ddown: "PCO/MO"`, `ddown: ["Alpha", "Beta"]`
+`uid`|String| A unique identifier for the input segment, for server-side validation |`uid: "PCO/YR"`
 
 ####Notes
 
 * If `maxLength` is not defined, but `max` is, `maxLength` will be set to `max.length`. If neither are defined, it will try to use `min.length`, and then will default to the widget's `dflength` option.
 * If `minLength` is not defined, it defaults to `maxLength`: The input will accept that length, no more or less. 
+* If `hint` is not defined, but `showHints` is true, it will use `name`. If `name` is also not defined, that input will have no placeholder hint. 
 * `hint` for a separator defines how it appears between the input segments. `mask` defines how it appears when the inputs are consolidated into one string. 
 * `regex` will override other properties, including `type`. Use it with care.
 * `ddown` can be a string, a simple string array, or a JSON array with `[{ label: "Label1", value: "value1" }]` format. (See JQueryUI autocomplete API for details.) 
