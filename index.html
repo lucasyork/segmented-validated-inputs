@@ -21,21 +21,28 @@
             $("#svwidg").change(function(){ console.log("change event");}).svInput(
                 {
                     dftype: "N",
-					acsource: targetpath,
+                    acsource: targetpath,
+                    afsource: valpath,
 					validator: valpath,
 					onSubmit: function () { console.log("oldval: " + this.oldVal); console.log("newval: " + this.newVal); },
 					autoSubmit: true,
-					key: keypath,
 					imgCancel: "",
-                    autoOpen: true,
+					autoOpen: true,
+					postdata: [{ w: "1" }],
                     segments: [
-                        { type: "V", maxLength: 3, hint: "015", title: "Three-digit number", ddown: "PJCODE/0YR", uid:"PJCODE/0YR", regex: /\d/ },
+                        { type: "A", maxLength: 4 },
+                        { type: "A", maxLength: 4 },
+                        { type: "V", maxLength: 3, hint: "015", title: "Three-digit number", ddown: "PJCODE/0YR", ssdata: [{ lookup: "PJCODE", values: "0YR" } ], uid:"PJCODE/0YR", regex: /\d/ },
                         { type: "-", hint: " - ", mask: "-" },
                         { maxLength: 3, minLength: 2, hint: "001", type: "N", title: "2-3-digit number", ddown: ['001', '002'] },
 						{ type: "-", hint: " - ", mask: "-" },
                         { type: "N", hint: "0001",  title: "2-4-digit number", maxLength: 4, minLength: 2 },
                         { type: "-", hint: " - ", mask: "-" },
-                        { type: "A", minLength: 3, maxLength: 5, title: "3-5 characters", ddown: [{ label: "California", value: "Cali" }, { label: "Connecticut", value: "Conn" }] }
+                        { type: "F", maxLength: 2, title: "checksum", ssdata: [{ test: "test" }], },
+                        { type: "-", hint: " - ", mask: "-" },
+                        { type: "A", minLength: 3, maxLength: 5, title: "3-5 characters", ddown: [{ label: "California", value: "Cali" }, { label: "Connecticut", value: "Conn" }] },
+                        { type: "-", hint: " - ", mask: "-" },
+                        { type: "F", maxLength: 2, title: "checksum" }
                     ]
                 });
           
@@ -59,7 +66,7 @@
 <div>
     <label>
         Widget</label>
-        <input type="text" id="svwidg" value="122-35-679" />
+        <input type="text" id="svwidg" value="11112222122-35-679" />
     
 </div>
 

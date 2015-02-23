@@ -2,28 +2,30 @@
 
 $.widget('ly.svInput', {
     options: {                    
-            acsource: "", // autocomplete source
-            validator: "", // validation target
-            onSubmit: null, // submit callback
-            key: "",    // pagekey
-            enabled: true,   // enables/disables segment inputs
-            forceUpperCase: true,
-            autoOpen: false,
-            autoSubmit: false,
-            showHints: true,
-            segments: [], // the segments!
-            dftype: "-",  // the default type used when not specified in segment -- HardSeparatorType "-", NumericInputType "N", AlphanumericInputType "A", ValidatedInputType "V"
-            dflength: 5, //the default maxLength used when all other efforts fail
-                //image sources:
-            imgSubmit: "data:image/gif;base64,R0lGODlhDAAMAHcAACH5BAEAAAAALAAAAAAMAAwAh5kA/wBWCgBgDQBwBwFmEAJnEARoFAZxEwx7FxR4IRR6IRVlIRduJhlvJxx/KB9+LiByLiCVKSSIMSVjKSuXNSx8OS2QNi5lMjSAQDd8QDybSD9tQEGiSEOZUkOoTUWaUEeVUEumWU2bVE6nV1CgXFGqX1WeXVmaZWStcWutb3Ced3eogHiif4Kug4awjZO9lpkA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhTAAEIHEjwwgaCCDFkQEiQRAcVDAWaKIEiIoAWHkKsGPiCIAcKHway0DBCYIoICFwMrPBAgggAFgaAQNiAQAIFBxxEZCDAQIETFhcEgGBR4ISIAQEAOw==",
-            imgOpen: "data:image/gif;base64,R0lGODlhDAAMAPcAAAAAADMAAGYAAJkAAMwAAP8AAAAzADMzAGYzAJkzAMwzAP8zAABmADNmAGZmAJlmAMxmAP9mAACZADOZAGaZAJmZAMyZAP+ZAADMADPMAGbMAJnMAMzMAP/MAAD/ADP/AGb/AJn/AMz/AP//AAAAMzMAM2YAM5kAM8wAM/8AMwAzMzMzM2YzM5kzM8wzM/8zMwBmMzNmM2ZmM5lmM8xmM/9mMwCZMzOZM2aZM5mZM8yZM/+ZMwDMMzPMM2bMM5nMM8zMM//MMwD/MzP/M2b/M5n/M8z/M///MwAAZjMAZmYAZpkAZswAZv8AZgAzZjMzZmYzZpkzZswzZv8zZgBmZjNmZmZmZplmZsxmZv9mZgCZZjOZZmaZZpmZZsyZZv+ZZgDMZjPMZmbMZpnMZszMZv/MZgD/ZjP/Zmb/Zpn/Zsz/Zv//ZgAAmTMAmWYAmZkAmcwAmf8AmQAzmTMzmWYzmZkzmcwzmf8zmQBmmTNmmWZmmZlmmcxmmf9mmQCZmTOZmWaZmZmZmcyZmf+ZmQDMmTPMmWbMmZnMmczMmf/MmQD/mTP/mWb/mZn/mcz/mf//mQAAzDMAzGYAzJkAzMwAzP8AzAAzzDMzzGYzzJkzzMwzzP8zzABmzDNmzGZmzJlmzMxmzP9mzACZzDOZzGaZzJmZzMyZzP+ZzADMzDPMzGbMzJnMzMzMzP/MzAD/zDP/zGb/zJn/zMz/zP//zAAA/zMA/2YA/5kA/8wA//8A/wAz/zMz/2Yz/5kz/8wz//8z/wBm/zNm/2Zm/5lm/8xm//9m/wCZ/zOZ/2aZ/5mZ/8yZ//+Z/wDM/zPM/2bM/5nM/8zM///M/wD//zP//2b//5n//8z//////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAANcALAAAAAAMAAwAAAg/AK8JHDiwQAGCCA2yEoBQIIACCxkiBMAqYkOKrBwAuMhqhEaOHjdO7PgRoRUAIRteA3BSpEkALFVes2JFpsCAADs=",
-            imgCancel: "data:image/gif;base64,R0lGODlhDAAMAJH/AP///4CAwABAgAAAACH5BAEAAAAALAAAAAAMAAwAQAIdhI8ZAhLZnlmwQseSyGfbGkgHhTgACS0cgppfUgAAO6BAAMBAAOBAAABgACBgAEBgAGBgAIBgAKBgAMBgAOBgAACAACCAAECAAGCAAICAAKCAAMCAAOCAAACgACCgAECgAGCgAICgAKCgAMCgAOCgAADAACDAAEDAAGDAAIDAAKDAAMDAAODAAADgACDgAEDgAGDgAIDgAKDgAMDgAODgAAAAQCAAQEAAQGAAQIAAQKAAQMAAQOAAQAAgQCAgQEAgQGAgQIAgQKAgQMAgQOAgQABAQCBAQEBAQGBAQIBAQKBAQMBAQOBAQABgQCBgQEBgQGBgQIBgQKBgQMBgQOBgQACAQCCAQECAQGCAQICAQKCAQMCAQOCAQACgQCCgQECgQGCgQICgQKCgQMCgQOCgQADAQCDAQEDAQGDAQIDAQKDAQMDAQODAQADgQCDgQEDgQGDgQIDgQKDgQMDgQODgQAAAgCAAgEAAgGAAgIAAgKAAgMAAgOAAgAAggCAggEAggGAggIAggKAggMAggOAggABAgCBAgEBAgGBAgIBAgKBAgMBAgOBAgABggCBggEBggGBggIBggKBggMBggOBggACAgCCAgECAgGCAgICAgKCAgMCAgOCAgACggCCggECggGCggICggKCggMCggOCggADAgCDAgEDAgGDAgIDAgKDAgMDAgODAgADggCDggEDggGDggIDggKDggMDggODggAAAwCAAwEAAwGAAwIAAwKAAwMAAwOAAwAAgwCAgwEAgwGAgwIAgwKAgwMAgwOAgwABAwCBAwEBAwGBAwIBAwKBAwMBAwOBAwABgwCBgwEBgwGBgwIBgwKBgwMBgwOBgwACAwCCAwECAwGCAwICAwKCAwMCAwOCAwACgwCCgwECgwGCgwICgwKCgwMCgwOCgwADAwCDAwEDAwGDAwIDAwKDAwP/78KCgpICAgP8AAAD/AP//AAAA//8A/wD//////yH5BAAAAAAALAAAAAAMAAwAAAgyAP8JHEiwoMGDCP+RI1eQHCSCkBgKdGgwosKHByNiPOhwY8OHFj8ODCkQksd/JhMWDAgAOw==",
-            imgWorking:"data:image/gif;base64,R0lGODlhEAAQAPMPALu7u5mZmTMzM93d3REREQAAAHd3d1VVVWZmZqqqqoiIiO7u7kRERCIiIgARAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFBwAPACwAAAAAEAAQAEAEcPDJtyg6dUrFetDTIopMoSyFcxxD1krD8AwCkASDIlPaUDQLR6G1Cy0SgqIkE1IQGMrFAKCcGWSBzwPAnAwarcKQ15MpTMJYd1ZyUDXSDGelBY0qIoBh/ZoYGgELCjoxCRRvIQcGD1kzgSAgAACQDxEAIfkEBQcADwAsAAAAAA8AEAAABF3wyfkMkotOJpscRKJJwtI4Q1MAoxQ0RFBw0xEvhGAVRZZJh4JgMAEQW7TWI4EwGFjKR+CAQECjn8DoN0kwDtvBT8FILAKJgfoo1iAGAPNVY9DGJXNMIHN/HJVqIxEAIfkEBQcADwAsAAAAABAADwAABFrwyfmColgiydpaQiY5x9Ith7hURdIl0wBIhpCAjKIIxaAUPQ0hFQsAC7MJALFSFi4SgC4wyHyuCYNWxH3AuhSEotkNGAALAPqqkigG8MWAjAnM4A8594vPUyIAIfkEBQcADwAsAAAAABAAEAAABF3wySkDvdKsddg+APYIWrcg2DIRQAcU6DJICjIsjBEETLEEBYLqYSDdJoCGiHgZwG4LQCCRECEIBAdoF5hdEIWwgBJqDs7DgcKyRHZl3uUwuhm2AbNNW+LV7yd+FxEAIfkEBQcACAAsAAAAABAADgAABEYQyYmMoVgeWQrP3NYhBCgZBdAFRUkdBIAUguVVo1ZsWFcEGB5GMBkEjiCBL2a5ZAi+m2SAURExwKqPiuCafBkvBSCcmiYRACH5BAUHAA4ALAAAAAAQABAAAARs0MnpAKDYrbSWMp0xZIvBKYrXjNmADOhAKBiQDF5gGcICNAyJTwFYTBaDQ0HAkgwSmAUj0OkMrkZM4HBgKK7YTKDRICAo2clAEIheKc9CISjEVTuEQrJASGcSBQcSUFEUDQUXJBgDBW0Zj34RACH5BAUHAA8ALAAAAAAQABAAAARf8Mn5xqBYgrVC4EEmBcOSfAEjSopJMglmcQlgBYjE5NJgZwjCAbO4YBAJjpIjSiAQh5ayyRAIDKvJIbnIagoFRFdkQDQKC0RBsCIUFAWsT7RwG410R8HiiK0WBwJjFBEAIfkEBQcADgAsAQABAA8ADwAABFrQybEWADXJLUHHAMJxIDAgnrOo2+AOibEMh1LN62gIxphzitRoCDAYNcNN6FBLShao4WzwHDQKvVGhoFAwGgtFgQHENhoB7nCwHRAIC0EyUcC8Zw1ha3NIRgAAIfkEBQcADwAsAAAAABAAEAAABGDwyfnWoljaNYYFV+Zx3hCEGEcuypBtMJBISpClAWLfWODymIFiCJwMDMiZBNAAYFqUAaNQ2E0YBIXGURAMCo1AAsFYBBoIScBJEwgSVcmP0li4FwcHz+FpCCQMPCFINxEAIfkEBQcADgAsAAABABAADwAABFzQyemWXYNqaSXY2vVtw3UNmROM4JQowKKlFOsgRI6ASQ8IhSADFAjAMIMAgSYJtByxyQIhcEoaBcSiwegpDgvAwSBJ0AIHBoCQqIAEi/TCIAABGhLG8MbcKBQgEQAh+QQFBwAPACwAAAEAEAAPAAAEXfDJSd+qeK5RB8fDRRWFspyotAAfQBbfNLCVUSSdKDV89gDAwcFBIBgywMRnkWBgcJUDKSZRIKAPQcGwYByAAYTEEJAAJIGbATEQ+B4ExmK9CDhBd8ThdHw/AmUYEQAh+QQFBwAPACwAAAEADwAPAAAEXvBJQIa8+ILSspdHkXxS9wxF4Q3L2aTBeC0sFjhAtuyLIjAMhYc2GBgaSKGuyNoBDp7czFAgeBIKwC6kWCAMxUSAFjtNCAAFGGF5tCQLAaJnWCTqHoREvQuQJAkyGBEAOw=="
+        acsource: "", // autocomplete source
+        afsource: "", //auto-fill source
+        validator: "", // validation target
+        onSubmit: null, // submit callback
+        enabled: true,   // enables/disables segment inputs
+        forceUpperCase: true,
+        autoOpen: false,
+        autoSubmit: false,
+        showHints: true,
+        postdata: [],
+        segments: [], // the segments!
+        dftype: "-",  // the default type used when not specified in segment -- HardSeparatorType "-", NumericInputType "N", AlphanumericInputType "A", ValidatedInputType "V", AutoFillInputType "F"
+        dflength: 5, //the default maxLength used when all other efforts fail
+        //image sources:
+        imgSubmit: "data:image/gif;base64,R0lGODlhDAAMAHcAACH5BAEAAAAALAAAAAAMAAwAh5kA/wBWCgBgDQBwBwFmEAJnEARoFAZxEwx7FxR4IRR6IRVlIRduJhlvJxx/KB9+LiByLiCVKSSIMSVjKSuXNSx8OS2QNi5lMjSAQDd8QDybSD9tQEGiSEOZUkOoTUWaUEeVUEumWU2bVE6nV1CgXFGqX1WeXVmaZWStcWutb3Ced3eogHiif4Kug4awjZO9lpkA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhTAAEIHEjwwgaCCDFkQEiQRAcVDAWaKIEiIoAWHkKsGPiCIAcKHway0DBCYIoICFwMrPBAgggAFgaAQNiAQAIFBxxEZCDAQIETFhcEgGBR4ISIAQEAOw==",
+        imgOpen: "data:image/gif;base64,R0lGODlhDAAMAPcAAAAAADMAAGYAAJkAAMwAAP8AAAAzADMzAGYzAJkzAMwzAP8zAABmADNmAGZmAJlmAMxmAP9mAACZADOZAGaZAJmZAMyZAP+ZAADMADPMAGbMAJnMAMzMAP/MAAD/ADP/AGb/AJn/AMz/AP//AAAAMzMAM2YAM5kAM8wAM/8AMwAzMzMzM2YzM5kzM8wzM/8zMwBmMzNmM2ZmM5lmM8xmM/9mMwCZMzOZM2aZM5mZM8yZM/+ZMwDMMzPMM2bMM5nMM8zMM//MMwD/MzP/M2b/M5n/M8z/M///MwAAZjMAZmYAZpkAZswAZv8AZgAzZjMzZmYzZpkzZswzZv8zZgBmZjNmZmZmZplmZsxmZv9mZgCZZjOZZmaZZpmZZsyZZv+ZZgDMZjPMZmbMZpnMZszMZv/MZgD/ZjP/Zmb/Zpn/Zsz/Zv//ZgAAmTMAmWYAmZkAmcwAmf8AmQAzmTMzmWYzmZkzmcwzmf8zmQBmmTNmmWZmmZlmmcxmmf9mmQCZmTOZmWaZmZmZmcyZmf+ZmQDMmTPMmWbMmZnMmczMmf/MmQD/mTP/mWb/mZn/mcz/mf//mQAAzDMAzGYAzJkAzMwAzP8AzAAzzDMzzGYzzJkzzMwzzP8zzABmzDNmzGZmzJlmzMxmzP9mzACZzDOZzGaZzJmZzMyZzP+ZzADMzDPMzGbMzJnMzMzMzP/MzAD/zDP/zGb/zJn/zMz/zP//zAAA/zMA/2YA/5kA/8wA//8A/wAz/zMz/2Yz/5kz/8wz//8z/wBm/zNm/2Zm/5lm/8xm//9m/wCZ/zOZ/2aZ/5mZ/8yZ//+Z/wDM/zPM/2bM/5nM/8zM///M/wD//zP//2b//5n//8z//////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAANcALAAAAAAMAAwAAAg/AK8JHDiwQAGCCA2yEoBQIIACCxkiBMAqYkOKrBwAuMhqhEaOHjdO7PgRoRUAIRteA3BSpEkALFVes2JFpsCAADs=",
+        imgCancel: "data:image/gif;base64,R0lGODlhDAAMAJH/AP///4CAwABAgAAAACH5BAEAAAAALAAAAAAMAAwAQAIdhI8ZAhLZnlmwQseSyGfbGkgHhTgACS0cgppfUgAAO6BAAMBAAOBAAABgACBgAEBgAGBgAIBgAKBgAMBgAOBgAACAACCAAECAAGCAAICAAKCAAMCAAOCAAACgACCgAECgAGCgAICgAKCgAMCgAOCgAADAACDAAEDAAGDAAIDAAKDAAMDAAODAAADgACDgAEDgAGDgAIDgAKDgAMDgAODgAAAAQCAAQEAAQGAAQIAAQKAAQMAAQOAAQAAgQCAgQEAgQGAgQIAgQKAgQMAgQOAgQABAQCBAQEBAQGBAQIBAQKBAQMBAQOBAQABgQCBgQEBgQGBgQIBgQKBgQMBgQOBgQACAQCCAQECAQGCAQICAQKCAQMCAQOCAQACgQCCgQECgQGCgQICgQKCgQMCgQOCgQADAQCDAQEDAQGDAQIDAQKDAQMDAQODAQADgQCDgQEDgQGDgQIDgQKDgQMDgQODgQAAAgCAAgEAAgGAAgIAAgKAAgMAAgOAAgAAggCAggEAggGAggIAggKAggMAggOAggABAgCBAgEBAgGBAgIBAgKBAgMBAgOBAgABggCBggEBggGBggIBggKBggMBggOBggACAgCCAgECAgGCAgICAgKCAgMCAgOCAgACggCCggECggGCggICggKCggMCggOCggADAgCDAgEDAgGDAgIDAgKDAgMDAgODAgADggCDggEDggGDggIDggKDggMDggODggAAAwCAAwEAAwGAAwIAAwKAAwMAAwOAAwAAgwCAgwEAgwGAgwIAgwKAgwMAgwOAgwABAwCBAwEBAwGBAwIBAwKBAwMBAwOBAwABgwCBgwEBgwGBgwIBgwKBgwMBgwOBgwACAwCCAwECAwGCAwICAwKCAwMCAwOCAwACgwCCgwECgwGCgwICgwKCgwMCgwOCgwADAwCDAwEDAwGDAwIDAwKDAwP/78KCgpICAgP8AAAD/AP//AAAA//8A/wD//////yH5BAAAAAAALAAAAAAMAAwAAAgyAP8JHEiwoMGDCP+RI1eQHCSCkBgKdGgwosKHByNiPOhwY8OHFj8ODCkQksd/JhMWDAgAOw==",
+        imgWorking:"data:image/gif;base64,R0lGODlhEAAQAPMPALu7u5mZmTMzM93d3REREQAAAHd3d1VVVWZmZqqqqoiIiO7u7kRERCIiIgARAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFBwAPACwAAAAAEAAQAEAEcPDJtyg6dUrFetDTIopMoSyFcxxD1krD8AwCkASDIlPaUDQLR6G1Cy0SgqIkE1IQGMrFAKCcGWSBzwPAnAwarcKQ15MpTMJYd1ZyUDXSDGelBY0qIoBh/ZoYGgELCjoxCRRvIQcGD1kzgSAgAACQDxEAIfkEBQcADwAsAAAAAA8AEAAABF3wyfkMkotOJpscRKJJwtI4Q1MAoxQ0RFBw0xEvhGAVRZZJh4JgMAEQW7TWI4EwGFjKR+CAQECjn8DoN0kwDtvBT8FILAKJgfoo1iAGAPNVY9DGJXNMIHN/HJVqIxEAIfkEBQcADwAsAAAAABAADwAABFrwyfmColgiydpaQiY5x9Ith7hURdIl0wBIhpCAjKIIxaAUPQ0hFQsAC7MJALFSFi4SgC4wyHyuCYNWxH3AuhSEotkNGAALAPqqkigG8MWAjAnM4A8594vPUyIAIfkEBQcADwAsAAAAABAAEAAABF3wySkDvdKsddg+APYIWrcg2DIRQAcU6DJICjIsjBEETLEEBYLqYSDdJoCGiHgZwG4LQCCRECEIBAdoF5hdEIWwgBJqDs7DgcKyRHZl3uUwuhm2AbNNW+LV7yd+FxEAIfkEBQcACAAsAAAAABAADgAABEYQyYmMoVgeWQrP3NYhBCgZBdAFRUkdBIAUguVVo1ZsWFcEGB5GMBkEjiCBL2a5ZAi+m2SAURExwKqPiuCafBkvBSCcmiYRACH5BAUHAA4ALAAAAAAQABAAAARs0MnpAKDYrbSWMp0xZIvBKYrXjNmADOhAKBiQDF5gGcICNAyJTwFYTBaDQ0HAkgwSmAUj0OkMrkZM4HBgKK7YTKDRICAo2clAEIheKc9CISjEVTuEQrJASGcSBQcSUFEUDQUXJBgDBW0Zj34RACH5BAUHAA8ALAAAAAAQABAAAARf8Mn5xqBYgrVC4EEmBcOSfAEjSopJMglmcQlgBYjE5NJgZwjCAbO4YBAJjpIjSiAQh5ayyRAIDKvJIbnIagoFRFdkQDQKC0RBsCIUFAWsT7RwG410R8HiiK0WBwJjFBEAIfkEBQcADgAsAQABAA8ADwAABFrQybEWADXJLUHHAMJxIDAgnrOo2+AOibEMh1LN62gIxphzitRoCDAYNcNN6FBLShao4WzwHDQKvVGhoFAwGgtFgQHENhoB7nCwHRAIC0EyUcC8Zw1ha3NIRgAAIfkEBQcADwAsAAAAABAAEAAABGDwyfnWoljaNYYFV+Zx3hCEGEcuypBtMJBISpClAWLfWODymIFiCJwMDMiZBNAAYFqUAaNQ2E0YBIXGURAMCo1AAsFYBBoIScBJEwgSVcmP0li4FwcHz+FpCCQMPCFINxEAIfkEBQcADgAsAAABABAADwAABFzQyemWXYNqaSXY2vVtw3UNmROM4JQowKKlFOsgRI6ASQ8IhSADFAjAMIMAgSYJtByxyQIhcEoaBcSiwegpDgvAwSBJ0AIHBoCQqIAEi/TCIAABGhLG8MbcKBQgEQAh+QQFBwAPACwAAAEAEAAPAAAEXfDJSd+qeK5RB8fDRRWFspyotAAfQBbfNLCVUSSdKDV89gDAwcFBIBgywMRnkWBgcJUDKSZRIKAPQcGwYByAAYTEEJAAJIGbATEQ+B4ExmK9CDhBd8ThdHw/AmUYEQAh+QQFBwAPACwAAAEADwAPAAAEXvBJQIa8+ILSspdHkXxS9wxF4Q3L2aTBeC0sFjhAtuyLIjAMhYc2GBgaSKGuyNoBDp7czFAgeBIKwC6kWCAMxUSAFjtNCAAFGGF5tCQLAaJnWCTqHoREvQuQJAkyGBEAOw=="
     },
 
     _officialValue: "",
     _tempValue: "",
     _baseacpath: "",
+    _baseafpath: "",
     _basevalpath: "",
     oldVal: "",
     newVal: "",
@@ -36,25 +38,19 @@ $.widget('ly.svInput', {
 
     genPath: function(target, basepath){
         var svI = this;
-        var atg = target, akey = svI.options.key;
+        var atg = target;
         var pathy = "";
         if (typeof atg != "undefined") {
             if (atg.length > 0) {
                 pathy = atg;
             }
         }
-        if (typeof akey != "undefined") {
-            if (akey.length > 0 && pathy.length > 0) {
-                pathy = pathy + "/" + akey;
-            }
-        }
-        
         if (pathy.length > 0) {
             if (basepath == "ac") { svI._baseacpath = pathy; }
-            else if (basepath == "val") { svI._basevalpath = pathy; }            
+            else if (basepath == "af") { svI._baseafpath = pathy; }
+            else if (basepath == "val") { svI._basevalpath = pathy; }
             return true;
         } else { return false; }
-
     },
        
     inputModeOpen: function () {
@@ -81,7 +77,13 @@ $.widget('ly.svInput', {
         } else {
             $("#ly-svTBtn").hide();
         }
-        
+     
+        $("input.ly-svV").each(function () {
+            if ($(this).hasClass("ly-svInvalid")) {
+                svI.ssValidation($(this));
+            }
+        });
+
     },
 
     inputModeRevert: function () {
@@ -109,8 +111,8 @@ $.widget('ly.svInput', {
         //validation stuff
         $(".ly-svA, .ly-svN").each(function () {
             var $this = $(this);
-                waitfor.push(svI.blurValidation($this));               
-            });
+            waitfor.push(svI.blurValidation($this));               
+        });
 
         if ($("input.ly-svInvalid").length == 0) {
 
@@ -172,29 +174,34 @@ $.widget('ly.svInput', {
             input.removeClass("ly-svInvalid");
         }
 
-         dfd.resolve(); 
+        dfd.resolve(); 
 
         return dfd.promise();
     },
 
     ssValidation: function (input) {
         var svI = this;
-        var sid = input.data("uid");
-        if (typeof sid == "undefined") { sid = input.data("dd"); }
-        if (typeof sid == "undefined" || typeof sid == "object") { sid = false; }
+        var prevs = svI.GetPreviousValues(input);
+        var currseg = svI.DescribeSegment(input);
+        var ssd = input.data("ssd");
+        if (typeof ssd == "undefined") { ssd = []; }
+        var ssmerged = $.merge(ssd, svI.options.postdata);
         var dfd = $.Deferred();
         input.removeClass("ly-svUnval");
         input.attr("title", input.data("st"));
-        if (sid) {
-            var vurl = svI._basevalpath + "/" + sid;
+        
+            var jd = { seginfo: currseg, ssdata: ssmerged, prevals: prevs };
+
+            var vurl = svI._basevalpath;
             $.ajax({
                 type: 'POST',
-                data: input.val(),
+                data: jd,
                 url: vurl,
                 async: true
             }).done(function (response) {
-                if (response == "0") { input.addClass("ly-svInvalid"); }
-                else { input.addClass("ly-svValid") }
+                if (response == "1" || response == true) {  }
+                else { input.addClass("ly-svInvalid") }
+                svI.enableAutoFill(input.nextAll("input.ly-svF"));
                 dfd.resolve();
             }).fail(function () {
                 input.addClass("ly-svUnval");
@@ -202,7 +209,82 @@ $.widget('ly.svInput', {
                 input.attr("title", "Unable to validate");
                 dfd.resolve();
             });;
-        } else { dfd.resolve(); }
+       
+        return dfd.promise();
+    },
+
+    GetPreviousValues: function(input) {
+        var svI = this;
+        var seq = input.data("seq");
+        var pva = [];
+
+        $("input.ly-svInput").each(function () {
+            var $this = $(this);
+            if ($this.data("seq") >= seq) { return false; }
+            pva.push({ sequence: $this.data("seq"), value: $this.val() });
+        });
+
+        return pva;
+    },
+
+    DescribeSegment: function(input) {
+        var svI = this;
+        var sda = [];
+
+        sda = { segid: input.attr("id"), segname: input.attr("name"), seq: input.data("seq"), maxlength: input.attr("maxlength"), minlength: input.attr("minlength"), value: input.val() };
+        return sda;
+    },
+
+    enableAutoFill: function(input) {
+        var svI = this;
+        var gtg = true;       
+        
+        $("input.ly-svN, input.ly-svA, input.ly-svV").each(function () {
+            var $this = $(this);
+            if (!gtg || ($this.data("seq") > input.data("seq"))) { return false; }            
+            if ($this.hasClass("ly-svInvalid") || ($this.val().length < 1)) { gtg = false; }            
+        });
+                
+        if (gtg) {
+            input.attr("readonly", false);
+            
+        }
+        else {input.attr("readonly", "readonly"); }
+    },
+
+    AutoFiller: function(input){
+        var svI = this;
+        var prevs = svI.GetPreviousValues(input);
+        var currseg = svI.DescribeSegment(input);
+        var ssd = input.data("ssd");
+        if (typeof ssd == "undefined") { ssd = []; }
+       var ssmerged =  $.merge(ssd, svI.options.postdata);
+        var dfd = $.Deferred();
+        input.removeClass("ly-svUnval");
+        input.attr("title", input.data("st"));
+        var jd = { seginfo: currseg, ssdata: ssmerged, prevals: prevs };
+        var vurl = svI._baseafpath;
+
+        $.ajax({
+            type: 'POST',
+            data: jd,
+            url: vurl,
+            async: true
+        }).done(function (response) {
+            if (response.length > 0) {
+                input.val(response);
+                var adds = parseInt(input.attr("minlength") - input.val().length);
+                for (var i = 0; i < adds; i++) {
+                    input.val("0" + input.val());
+                }
+            }
+            dfd.resolve();
+        }).fail(function () {
+            input.addClass("ly-svUnval");
+            input.data("st", input.attr("title"));
+            input.attr("title", "Unable to auto-fill");
+            dfd.resolve();
+        });
         return dfd.promise();
     },
 
@@ -224,6 +306,7 @@ $.widget('ly.svInput', {
         var workingSegment;
         var IsACTargetDefined = svI.genPath(svI.options.acsource, "ac");
         var IsValTargetDefined = svI.genPath(svI.options.validator, "val");
+        var IsAFTargetDefined = svI.genPath(svI.options.afsource, "af");
         
         originalInput.after(buttonSubmit);
         originalInput.after(waitgif);
@@ -242,10 +325,12 @@ $.widget('ly.svInput', {
                     //For each segment...
         for (var i = 0; i < svI.options.segments.length; i++) {
             var Seg = svI.options.segments[i];
-            var segType = Seg.type;
+            var segType = Seg.type, segSeq = i;
             var segLength = Seg.maxLength, segMinLength = Seg.minLength, segMax = Seg.max, segMin = Seg.min;
             var segHint = Seg.hint, segTitle = Seg.title, segMask = Seg.mask, segName = Seg.name;
             var segDroplist = Seg.ddown, segAcid = Seg.uid;
+            var SegSSDefined = false, SegSSdata = Seg.ssdata;
+            if (typeof SegSSdata != "undefined") { SegSSDefined = true; }
 
             if (typeof segLength == "undefined") {
                 if (typeof segMax == "undefined") {
@@ -269,9 +354,10 @@ $.widget('ly.svInput', {
             if (typeof segType == "undefined") { segType = svI.options.dftype; }
             if (typeof segTitle == "undefined") { segTitle = segHint; }
 
-            if (segType == "A" || segType == "N" || segType == "V") {
+                // If A, N, V, F
+            if (segType == "A" || segType == "N" || segType == "V" || segType == "F") {
                 workingSegment = $(inputTemplate).addClass("ly-sv" + segType)
-                    .attr("id", originalName + "_i" + i)
+                    .attr("id", originalName + "_i" + i).data("seq", segSeq)
                     .attr("maxlength", segLength)
 					.attr("minlength", segMinLength)
                     .attr("size", segLength)                    
@@ -283,12 +369,15 @@ $.widget('ly.svInput', {
 			if (typeof segMask != "undefined") { workingSegment.data("mask", segMask); }
 			if (typeof segAcid != "undefined") { workingSegment.data("uid", segAcid); }
 			if (typeof segDroplist != "undefined") { workingSegment.data("dd", segDroplist); }
+			if (SegSSDefined) { workingSegment.data("ssd", SegSSdata); }
+		//	if (segType == "F") { workingSegment.attr("readonly", "readonly"); }
 
 					//regex logic
-		var segregN = new RegExp("\\d{" + segMinLength + "," +  segLength + "}");  //numeric regex
-        var segregA = new RegExp("\\w{" + segMinLength + "," +  segLength + "}"); //alphanumeric regex
-        var segregV = new RegExp("\\w{" + segMinLength + "," +  segLength + "}"); //validated regex 
-		
+		var segregN = new RegExp("\\d{" + segMinLength + "," + segLength + "}");  //numeric regex
+        var segregA = new RegExp("\\w{" + segMinLength + "," + segLength + "}"); //alphanumeric regex
+        var segregV = new RegExp("\\w{" + segMinLength + "," + segLength + "}"); //validated regex        
+        var segregF = new RegExp("\\d{" + segMinLength + "," + segLength + "}");  //autofill regex
+
                 if (typeof Seg.regex != "undefined") {
                     workingSegment.data("pattern", Seg.regex);
                 } else {
@@ -296,6 +385,7 @@ $.widget('ly.svInput', {
 						 if (segType == "N") { segReg = segregN; }
                     else if (segType == "A") { segReg = segregA; }
                     else if (segType == "V") { segReg = segregV; }
+                    else if (segType == "F") { segReg = segregF; }
                     workingSegment.data("pattern", segReg);
                 }
 
@@ -330,13 +420,30 @@ $.widget('ly.svInput', {
                     }
                 }
 
+                if (segType == "V") {
+                    workingSegment.addClass("ly-svInvalid");
+                }
+
+                //autofill
+                if (segType == "F") {
+                    workingSegment.focus(function () {
+                        if (IsAFTargetDefined) {
+                            svI.AutoFiller($(this));
+                        }
+                    });
+                }
+
                 //autocomplete
                 var sourcepath = "";
                 
                 if (typeof segDroplist == "object") { sourcepath = segDroplist; }
-                else if (IsACTargetDefined && typeof segDroplist == "string") { sourcepath = svI._baseacpath + "/" + segDroplist; }
-                else if (IsACTargetDefined && typeof segAcid != "undefined") { sourcepath = svI._baseacpath + "/" + segAcid; }
-                
+                else if (IsACTargetDefined && typeof segDroplist == "string") {
+                    sourcepath = svI._baseacpath
+                    if (segDroplist.length > 0) {
+                       sourcepath = sourcepath + "/" + segDroplist;
+                    }
+                }
+                                
                 if (sourcepath.length > 0) {
                     workingSegment.autocomplete({
                         minLength: 0,
@@ -345,18 +452,18 @@ $.widget('ly.svInput', {
                     });
                 }
 
-            } //end if 
+            } //end if A, N, V
             else if (segType == "-") {
-				
-				if (typeof segMask == "undefined") { segMask = ""; }
-				
+
+                if (typeof segMask == "undefined") { segMask = ""; }
+
                 workingSegment = $("<span class='ly-svInput ly-separator' data-mask='" + segMask + "'>" + segHint + "</span>");
                 originalInput.before(workingSegment);
 
                 if (originalInput.val().substring(0, segMask.length) == segMask) {
                     originalInput.val(originalInput.val().substring(segMask.length));
                 }
-            }
+            } //end if -
             else {
                 console.log(segType + " is not a valid input segment type");
             }
@@ -394,8 +501,10 @@ $.widget('ly.svInput', {
                 //new value into original input
                 svI._tempValue = amalgam;
                 $("#outval").text(svI._tempValue); //temporary!
-            }
 
+                
+            }
+            svI.enableAutoFill($this.nextAll("input.ly-svF"));
         }); //end on blur
 
         if (svI.options.autoSubmit) {
