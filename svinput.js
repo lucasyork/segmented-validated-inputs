@@ -6,7 +6,8 @@ $.widget('ly.svInput', {
         afsource: "", //auto-fill source
         validator: "", // validation target
         onSubmit: null, // submit callback
-        enabled: true,   // enables/disables segment inputs
+        enableSegments: true,   // enables/disables segment inputs
+        enableOriginal: false,
         forceUpperCase: true,
         autoOpen: false,
         autoSubmit: false,
@@ -142,9 +143,24 @@ $.widget('ly.svInput', {
         } else {
             $("#ly-svSBtn").show();
             $("#ly-svWBtn").hide();
-        }
+        }        
+    },
 
+    acValidation: function(input) {
+        var svI = this;
         
+        input.autocomplete({
+            disabled: true,
+            response: function (event, ui) {
+                if (ui.content.length != 1) {
+                    input.addClass("ly-svInvalid");
+                } else {
+                    input.val(ui.content[0].value);
+                    input.removeClass("ly-svInvalid");
+                }
+            }
+        })
+            .autocomplete("search", input.val()).autocomplete("option", "disabled", false);
     },
 
     blurValidation: function (input) {
@@ -153,7 +169,7 @@ $.widget('ly.svInput', {
         var isValid = false;
         var dfd = $.Deferred();
 
-        if (svI.options.forceUpperCase) { input.val(input.val().toUpperCase()); }
+        if (svI.options.forceUpperCase) { input.val(input.val().toUpperCase()); }        
 
         if ((input.hasClass("ly-svN") || input.hasClass("ly-svV")) && input.val().length < input.attr("minlength")) {
             var adds = parseInt(input.attr("minlength") - input.val().length);
@@ -163,19 +179,23 @@ $.widget('ly.svInput', {
             }
         }
 
+        if (input.hasClass("ly-svAC")) {
+            dfd.resolve();
+            return dfd.promise();
+        }
+
         if (input.val().match(pat) != null) {
             if (!(input.val() > input.attr("max") || input.val() < input.attr("min") || input.val().length > input.attr("maxlength"))) {
                 isValid = true;
             }
         }
-
+       
         if (!isValid) { input.addClass("ly-svInvalid"); }
         else {
             input.removeClass("ly-svInvalid");
         }
 
-        dfd.resolve(); 
-
+        dfd.resolve();
         return dfd.promise();
     },
 
@@ -295,7 +315,7 @@ $.widget('ly.svInput', {
         svI.oldVal = originalVal;
 		var disableflag = "";
         if (typeof originalName == "undefined") { originalName = originalInput.attr("id"); }
-		if (!svI.options.enabled) { disableflag = "disabled"; }
+		if (!svI.options.enableSegments) { disableflag = "disabled"; }
 		var inputTemplate = "<input type='text' class='ly-svInput' " + disableflag + "/>";
 		var buttonToggle;
 	    	if (svI.options.imgOpen.length > 0) { buttonToggle = "<img src='" + svI.options.imgOpen + "' title='Edit...' id='ly-svTBtn' />"; }
@@ -328,10 +348,11 @@ $.widget('ly.svInput', {
             var segType = Seg.type, segSeq = i;
             var segLength = Seg.maxLength, segMinLength = Seg.minLength, segMax = Seg.max, segMin = Seg.min;
             var segHint = Seg.hint, segTitle = Seg.title, segMask = Seg.mask, segName = Seg.name;
-            var segDroplist = Seg.ddown, segAcid = Seg.uid;
+            var segDroplist = Seg.ddown, segAcid = Seg.uid, fac = Seg.reqAC;
+            var segDV = Seg.dfval;
             var SegSSDefined = false, SegSSdata = Seg.ssdata;
             if (typeof SegSSdata != "undefined") { SegSSDefined = true; }
-
+            if (fac != true) { fac = false; }
             if (typeof segLength == "undefined") {
                 if (typeof segMax == "undefined") {
                     if (typeof segMin == "undefined") {
@@ -415,10 +436,17 @@ $.widget('ly.svInput', {
                     }
                     else {
                         console.warn("Unable to parse original value into segmented inputs");
-                        originalInput.val("");
-                        
+                        originalInput.val("");                        
                     }
                 }
+
+                //insert default value if applicable and empty
+                if (typeof segDV != "undefined") {
+                    if (workingSegment.val().length == 0) {
+                        workingSegment.val(segDV);
+                    }
+                }
+
 
                 if (segType == "V") {
                     workingSegment.addClass("ly-svInvalid");
@@ -449,7 +477,13 @@ $.widget('ly.svInput', {
                         minLength: 0,
                         delay: 350,
                         source: sourcepath
-                    });
+                    })
+                    if (fac == true) {
+                        workingSegment.addClass("ly-svAC").blur(function () {
+                            svI.acValidation($(this));
+                        });
+                        svI.acValidation(workingSegment);
+                    }
                 }
 
             } //end if A, N, V
@@ -469,6 +503,9 @@ $.widget('ly.svInput', {
             }
         } // end for each segment
         originalInput.val(originalVal);
+        if (!svI.options.enableOriginal) {
+            originalInput.attr("readonly", "readonly");
+        }
 
         $(".ly-svInput").hide();
 
