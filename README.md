@@ -2,13 +2,9 @@
 ##Description
 This JQueryUI widget takes a single text input and separates it into input segments, which each can have separate parameters defined, including validation. 
 
-##Disclaimer
-A work in progress. Some planned functionality has not yet been implemented. 
-
 ##Dependencies
 JQuery, 
 JQueryUI (widget base + autocomplete)
-
 
 ##Usage:
 ```javascript
@@ -94,7 +90,7 @@ Property | Format | Description   | Example
 `mask`|String|If set, this overrides the input's value when creating the final output. (Intended for separators.)|`mask: "-"`
 `regex`|RegExp|If set, this overrides the default validation RegExp for the input|`regex: /\w/`
 `ddown`|String or String Array|An identifier to pass to the autocomplete source, or a hard-coded list of selections for autocomplete|`ddown: "PCO/MO"`, `ddown: ["Alpha", "Beta"]`
-`reqAC`|Boolean|Whether the segment input should allow only values from the autocomplete source list.| `reqAC: true`
+`reqAC`|Boolean|Whether the segment input should allow only values from the autocomplete source list| `reqAC: true`
 `ssdata`|Array|An array of key-value pairs sent to the server in post for server-side validation and auto-fill requests|`ssdata: [{ key1: "value1", key2: "value2" }]`
 
 ####Segment Types
@@ -119,6 +115,10 @@ Separator (`type: "-"`)|Separators allow for text and/or space between segment i
 * `ddown` can be a string, a simple string array, or a JSON array with `[{ label: "Label1", value: "value1" }]` format. (See JQueryUI autocomplete API for details.)
 * If `reqAC` is not defined, or is anything other than `true`, it defaults to false. 
 * `ssdata` and `postdata` are merged together and then included as *data* when posting to the server.
+
+
+##Status
+Not currently in active development. v1.7 is the final planned release, barring bugfixes.
 
 ##Acknowledgments
 

@@ -219,7 +219,7 @@ $.widget('ly.svInput', {
                 url: vurl,
                 async: true
             }).done(function (response) {
-                if (response == "1" || response == true) {  }
+                if (response == "1" || response == true) { input.removeClass("ly-svInvalid"); }
                 else { input.addClass("ly-svInvalid") }
                 svI.enableAutoFill(input.nextAll("input.ly-svF"));
                 dfd.resolve();
