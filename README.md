@@ -118,7 +118,7 @@ Separator (`type: "-"`)|Separators allow for text and/or space between segment i
 
 
 ##Status
-Not currently in active development. v1.7 is the final planned release, barring bugfixes.
+Not currently in active development. v1.7x is the final planned release, barring bugfixes.
 
 ##Acknowledgments
 

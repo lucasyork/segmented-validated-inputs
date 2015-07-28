@@ -391,8 +391,7 @@ $.widget('ly.svInput', {
 			if (typeof segAcid != "undefined") { workingSegment.data("uid", segAcid); }
 			if (typeof segDroplist != "undefined") { workingSegment.data("dd", segDroplist); }
 			if (SegSSDefined) { workingSegment.data("ssd", SegSSdata); }
-		//	if (segType == "F") { workingSegment.attr("readonly", "readonly"); }
-
+		
 					//regex logic
 		var segregN = new RegExp("\\d{" + segMinLength + "," + segLength + "}");  //numeric regex
         var segregA = new RegExp("\\w{" + segMinLength + "," + segLength + "}"); //alphanumeric regex
@@ -510,6 +509,13 @@ $.widget('ly.svInput', {
         $(".ly-svInput").hide();
 
         var si = $("input.ly-svInput");
+
+        //On focus, inputs full of just spaces are emptied
+        si.focus(function () {
+            var $this = $(this);
+            var ival = $this.val().trim();
+            if (ival.length == 0) { $this.val(ival); }            
+        });
 
 
             //Validation on blur
